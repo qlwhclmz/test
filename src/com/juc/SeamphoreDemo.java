@@ -1,6 +1,8 @@
 package com.juc;
 
+import java.util.Random;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author 79282
@@ -24,7 +26,8 @@ public class SeamphoreDemo {
                     //信号量-1
                     semaphore.acquire();
                     System.out.println(Thread.currentThread().getName() + "抢到了车位");
-                    Thread.sleep(4000);
+                 //  Thread.sleep(2000);
+                    TimeUnit.SECONDS.sleep(new Random().nextInt(5));
                     System.out.println(Thread.currentThread().getName()+"离开了车位");
                 } catch (Exception e) {
                     e.printStackTrace();
