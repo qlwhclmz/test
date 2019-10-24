@@ -1,5 +1,9 @@
 package com.productandcousmer02;
 
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * 线程间通信 :
  * 1.使用生产者 消费者
@@ -9,43 +13,49 @@ package com.productandcousmer02;
  * 使用synchronized实现
  *
  * 当出现四个线程时 会产生虚假唤醒
- * 解决方案:1.if--->while
- *
+
+ *         使用Condition 对标实现synchronize
  *
  */
-class ShareData//资源类
+class ShareData02//资源类
 {
     private int number = 0;
+    private final Lock lock = new ReentrantLock();
+    private final Condition condition = lock.newCondition();
+
 
     public synchronized void increment() throws InterruptedException
     {
         //判断
         while(number!=0) {
-            this.wait();
+           condition.await();
         }
         //干活
         ++number;
         System.out.println(Thread.currentThread().getName()+" \t "+number);
         //通知
-        this.notifyAll();
+        condition.signalAll();
     }
 
     public synchronized void decrement() throws InterruptedException
     {
         //判断
-        while(number!=1) {
-            this.wait();
+        while (number != 1) {
+            condition.await();
+
         }
+
         //干活
         --number;
         System.out.println(Thread.currentThread().getName()+" \t "+number);
         //通知
-        this.notifyAll();
+        condition.signalAll();
+
     }
 }
 
 
-public class NotifyWaitDemo01
+public class NotifyWaitDemo02
 {
     public static void main(String[] args)
     {
