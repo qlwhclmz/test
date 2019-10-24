@@ -50,10 +50,11 @@ public class ThreadPool {
                                                     TimeUnit.SECONDS,
                                                     new LinkedBlockingQueue<Runnable>(1024),
                                                     Executors.defaultThreadFactory(),
-                                                    new ThreadPoolExecutor.AbortPolicy()
-                                                    //new ThreadPoolExecutor.CallerRunsPolicy()
-                                                    //new ThreadPoolExecutor.DiscardOldestPolicy()
-                                                  //new ThreadPoolExecutor.DiscardOldestPolicy()
+                                                    new ThreadPoolExecutor.AbortPolicy()//默认拒绝策略抛出rejectedExecutionException异常
+                                                    //new ThreadPoolExecutor.CallerRunsPolicy()既不抛弃任务,也不抛出异常 将任务退回给调用者
+                                                    //new ThreadPoolExecutor.DiscardOldestPolicy()抛弃队列中等待最久的任务 然后把当前任务进入到队列中,尝试再次提交当前任务
+                                                  //new ThreadPoolExecutor.DiscardPolicy()默默丢弃无法处理的任务
+                                                    //以上内置策略都实现了rejectedExecutionHandlerHandler接口
                                                     );
         try {
             for (int i = 1; i <= 100; i++) {
