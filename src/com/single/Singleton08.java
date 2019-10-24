@@ -8,9 +8,6 @@ public enum Singleton08 {
 
     INSTANCE;
 
-    public void speak() {
-        System.out.println("我是你爹");
-    }
 }
 class Test08{
     public static void main(String[] args) {
