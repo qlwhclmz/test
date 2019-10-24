@@ -45,7 +45,7 @@ public class ThreadPool {
          * 7.handler:拒绝策略,表示当队列任务满后,并且工作线程大于等于线程池的最大线程数(maxmumpoolSize)是如何来拒绝请求执行的handler策略
          */
         ExecutorService pool = new ThreadPoolExecutor(5,
-                                                 5,
+                                                    20,
                                                      5L,
                                                     TimeUnit.SECONDS,
                                                     new LinkedBlockingQueue<Runnable>(1024),
