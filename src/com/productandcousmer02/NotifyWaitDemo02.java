@@ -24,7 +24,7 @@ class ShareData02//资源类
     private final Condition condition = lock.newCondition();
 
 
-    public synchronized void increment() throws InterruptedException
+    public  void increment() throws InterruptedException
     {
         //判断
         while(number!=0) {
@@ -37,7 +37,7 @@ class ShareData02//资源类
         condition.signalAll();
     }
 
-    public synchronized void decrement() throws InterruptedException
+    public  void decrement() throws InterruptedException
     {
         //判断
         while (number != 1) {
