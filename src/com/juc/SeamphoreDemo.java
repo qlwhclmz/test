@@ -25,6 +25,7 @@ public class SeamphoreDemo {
                 try {
                     //信号量-1
                     semaphore.acquire();
+                    System.out.println("执行一次信号量请求");
                     System.out.println(Thread.currentThread().getName() + "抢到了车位");
                  //  Thread.sleep(2000);
                     TimeUnit.SECONDS.sleep(new Random().nextInt(5));
@@ -33,6 +34,7 @@ public class SeamphoreDemo {
                     e.printStackTrace();
                 }finally {
                     semaphore.release();
+                    System.out.println("执行release请求");
                 }
             }, String.valueOf(i)).start();
         }
