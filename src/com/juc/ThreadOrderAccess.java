@@ -9,86 +9,121 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class ThreadOrderAccess {
     public static void main(String[] args) {
-        ShareResource shareResource = new ShareResource();
-        new Thread(()->{
-            try {
-                shareResource.print5(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        },"A").start();
+        ShareResource sr = new ShareResource();
 
-        new Thread(()->{
-            try {
-                shareResource.print10(2);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        new Thread(() -> {
+            for (int i = 1; i <= 10; i++) {
+                try {
+                    sr.print5(i);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-        },"B").start();
-
-
-        new Thread(()->{
-            try {
-                shareResource.print15(3);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        }, "A").start();
+        new Thread(() -> {
+            for (int i = 1; i <= 10; i++) {
+                try {
+                    sr.print10(i);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-        },"C").start();
+        }, "B").start();
+        new Thread(() -> {
+            for (int i = 1; i <= 10; i++) {
+                try {
+                    sr.print15(i);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, "C").start();
+
     }
 }
 
 /**
  * 资源类
  */
-class ShareResource{
-    private int num = 1;
+class ShareResource {
+    private int number = 1;
     private final Lock lock = new ReentrantLock();
-    private final Condition condition1 = lock.newCondition();
-    private final Condition condition2 = lock.newCondition();
-    private final Condition condition3 = lock.newCondition();
+    private final Condition c1 = lock.newCondition();
+    private final Condition c2 = lock.newCondition();
+    private final Condition c3 = lock.newCondition();
 
-    public void print5(int number) throws InterruptedException {
-        //1.判断
-        while (number != 1) {
-            condition1.await();
+    public void print5(int totalLoopNumber) throws InterruptedException {
+        lock.lock();
+        try {
+            //1 判断
+            while (number != 1) {
+                //A 就要停止
+                c1.await();
+            }
+            //2 干活
+            for (int i = 1; i <= 5; i++) {
+                System.out.println(Thread.currentThread().getName() + "\t" + i + "\t totalLoopNumber: " + totalLoopNumber);
+            }
+            //3 通知
+            number = 2;
+            c2.signal();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
         }
-
-        //2.干活
-        for (int i = 1; i <=5 ; i++) {
-            System.out.println(Thread.currentThread().getName()+num);
-        }
-        //3.通知
-        condition2.signal();
-    }
-    public void print10(int number) throws InterruptedException {
-        //1.判断
-        while (number != 2) {
-            condition2.await();
-        }
-
-        //2.干活
-        for (int i = 1; i <=10 ; i++) {
-            System.out.println(Thread.currentThread().getName()+num);
-        }
-        //3.通知
-        condition3.signal();
     }
 
-    public void print15(int number) throws InterruptedException {
-        //1.判断
-        while (number != 3) {
-            condition3.await();
-        }
+    public void print10(int totalLoopNumber)throws InterruptedException {
+        lock.lock();
+        try {
+            //1 判断
+            while (number != 2) {
+                //A 就要停止
+                c2.await();
+            }
+            //2 干活
+            for (int i = 1; i <= 10; i++) {
+                System.out.println(Thread.currentThread().getName() + "\t" + i + "\t totalLoopNumber: " + totalLoopNumber);
+            }
+            //3 通知
+            number = 3;
+            c3.signal();
 
-        //2.干活
-        for (int i = 1; i <=15 ; i++) {
-            System.out.println(Thread.currentThread().getName()+num);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
         }
-        //3.通知
-        num = 1;
-        condition1.signal();
     }
 
+    public void print15(int totalLoopNumber)throws InterruptedException {
+        lock.lock();
+        try {
+            //1 判断
+            while (number != 3) {
+                //A 就要停止
+                c3.await();
+            }
+            //2 干活
+            for (int i = 1; i <= 15; i++) {
+                System.out.println(Thread.currentThread().getName() + "\t" + i + "\t totalLoopNumber: " + totalLoopNumber);
+            }
+            //3 通知
+            number = 1;
+            c1.signal();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
 
 
+    }
 }
+
+
+
+
+
