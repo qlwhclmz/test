@@ -33,6 +33,9 @@ class ProductPool {
 }
 
 
+/**
+ * @author 79282
+ */
 public class LinkBlockKingQueue {
 
 
