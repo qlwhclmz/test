@@ -26,7 +26,7 @@ class ProductPool {
      * 消费产品
      * @throws InterruptedException
      */
-    public void consum() throws InterruptedException {
+    public void consumr() throws InterruptedException {
         Integer take = (Integer) producstPool.take();
         System.out.println(Thread.currentThread().getName()+"消费了"+take+"号产品");
     }
@@ -56,7 +56,7 @@ public class LinkBlockKingQueue {
         new Thread(()->{
             for (int i = 1; i <= 50; i++) {
                 try {
-                    productPool.consum();
+                    productPool.consumr();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
